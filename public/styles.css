@@ -4,7 +4,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #282c34;
+    background-color: #000;
 }
 
 #game-board {
@@ -12,16 +12,10 @@ body {
     grid-template-columns: repeat(20, 20px);
 }
 
-.snake,
-.food {
+.pacman,
+.ghost {
     width: 20px;
     height: 20px;
-}
-
-.snake {
-    background-color: #61dafb;
-}
-
-.food {
-    background-color: #ff6347;
+    background-color: #f00;
+    border-radius: 50%;
 }
