@@ -11,20 +11,13 @@ body {
     text-align: center;
 }
 
-.mole {
-    width: 80px;
-    height: 80px;
-    background-color: #8B4513; /* Saddle Brown */
-    border-radius: 50%;
+.falling-alphabet {
+    font-size: 24px;
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
 }
 
 #score {
     font-size: 18px;
     font-weight: bold;
-    margin-top: 20px;
+    margin-bottom: 10px;
 }
