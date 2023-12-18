@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('game-board');
-    let snake = [{ x: 10, y: 10 }];
+    let snake = [{ x: 10, y: 10 }]; // Initial snake position
     let food = getRandomPosition();
     let direction = 'right';
+    let intervalId;
 
     function getRandomPosition() {
         return {
@@ -18,23 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
         snake.forEach(segment => {
             const snakeElement = document.createElement('div');
             snakeElement.classList.add('snake');
-            snakeElement.style.gridRowStart = segment.y + 1;
-            snakeElement.style.gridColumnStart = segment.x + 1;
+            snakeElement.style.gridRow = segment.y + 1;
+            snakeElement.style.gridColumn = segment.x + 1;
             board.appendChild(snakeElement);
         });
 
         // Draw food
         const foodElement = document.createElement('div');
         foodElement.classList.add('food');
-        foodElement.style.gridRowStart = food.y + 1;
-        foodElement.style.gridColumnStart = food.x + 1;
+        foodElement.style.gridRow = food.y + 1;
+        foodElement.style.gridColumn = food.x + 1;
         board.appendChild(foodElement);
     }
 
     function move() {
-        const head = Object.assign({}, snake[0]); // Clone the head of the snake
+        const head = Object.assign({}, snake[0]);
 
-        // Update the head position based on the direction
         switch (direction) {
             case 'up':
                 head.y--;
@@ -50,27 +50,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
 
-        // Check for collisions with walls or itself
-        if (
-            head.x < 0 || head.x >= 20 ||
-            head.y < 0 || head.y >= 20 ||
-            isSnakeCollision(head)
-        ) {
-            alert('Game Over!');
-            resetGame();
+        if (head.x < 0) head.x = 19;
+        if (head.x > 19) head.x = 0;
+        if (head.y < 0) head.y = 19;
+        if (head.y > 19) head.y = 0;
+
+        if (isSnakeCollision(head)) {
+            gameOver();
             return;
         }
 
-        snake.unshift(head); // Add the new head to the front of the snake
+        snake.unshift(head);
 
-        // Check for collision with food
         if (head.x === food.x && head.y === food.y) {
             food = getRandomPosition();
         } else {
-            snake.pop(); // Remove the tail if no collision with food
+            snake.pop();
         }
 
-        draw(); // Redraw the game board
+        draw();
     }
 
     function isSnakeCollision(head) {
@@ -81,7 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
         snake = [{ x: 10, y: 10 }];
         food = getRandomPosition();
         direction = 'right';
+        clearInterval(intervalId);
+        intervalId = setInterval(move, 200);
         draw();
+    }
+
+    function gameOver() {
+        alert('Game Over!');
+        resetGame();
     }
 
     document.addEventListener('keydown', (event) => {
@@ -101,6 +106,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    setInterval(move, 200); // Move the snake every 200 milliseconds
-    draw(); // Initial draw of the game board
+    resetGame(); // Start the game
 });
