@@ -18,16 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         snake.forEach(segment => {
             const snakeElement = document.createElement('div');
             snakeElement.classList.add('snake');
-            snakeElement.style.gridRowStart = segment.y + 1;
-            snakeElement.style.gridColumnStart = segment.x + 1;
+            snakeElement.style.gridRow = segment.y + 1;
+            snakeElement.style.gridColumn = segment.x + 1;
             board.appendChild(snakeElement);
         });
 
         // Draw food
         const foodElement = document.createElement('div');
         foodElement.classList.add('food');
-        foodElement.style.gridRowStart = food.y + 1;
-        foodElement.style.gridColumnStart = food.x + 1;
+        foodElement.style.gridRow = food.y + 1;
+        foodElement.style.gridColumn = food.x + 1;
         board.appendChild(foodElement);
     }
 
