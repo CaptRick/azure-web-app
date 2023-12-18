@@ -4,18 +4,27 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #000;
+    background-color: #87CEEB; /* Light Sky Blue */
 }
 
-#game-board {
-    display: grid;
-    grid-template-columns: repeat(20, 20px);
+#game-container {
+    text-align: center;
 }
 
-.pacman,
-.ghost {
-    width: 20px;
-    height: 20px;
-    background-color: #f00;
+.mole {
+    width: 80px;
+    height: 80px;
+    background-color: #8B4513; /* Saddle Brown */
     border-radius: 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#score {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
 }

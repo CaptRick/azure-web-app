@@ -1,52 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const board = document.getElementById('game-board');
-    const pacman = createEntity('pacman', 1, 1);
-    const ghosts = [createEntity('ghost', 10, 10), createEntity('ghost', 15, 5)];
+    const molesContainer = document.getElementById('moles-container');
+    const scoreElement = document.getElementById('score');
+    let score = 0;
 
-    board.appendChild(pacman);
-    ghosts.forEach(ghost => board.appendChild(ghost));
-
-    document.addEventListener('keydown', (event) => {
-        moveEntity(pacman, event.key);
+    molesContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('mole')) {
+            score++;
+            updateScore();
+            hideMole(event.target);
+        }
     });
 
-    setInterval(() => {
-        ghosts.forEach(ghost => moveEntity(ghost, getRandomDirection()));
-    }, 1000);
-
-    function createEntity(className, x, y) {
-        const entity = document.createElement('div');
-        entity.className = className;
-        entity.style.gridRow = y + 1;
-        entity.style.gridColumn = x + 1;
-        return entity;
+    function updateScore() {
+        scoreElement.textContent = `Score: ${score}`;
     }
 
-    function moveEntity(entity, direction) {
-        let x = parseInt(entity.style.gridColumn) - 1;
-        let y = parseInt(entity.style.gridRow) - 1;
+    function showMole() {
+        const mole = document.createElement('div');
+        mole.classList.add('mole');
+        mole.style.top = `${Math.random() * 300}px`;
+        mole.style.left = `${Math.random() * 300}px`;
+        molesContainer.appendChild(mole);
 
-        switch (direction) {
-            case 'ArrowUp':
-                y = Math.max(0, y - 1);
-                break;
-            case 'ArrowDown':
-                y = Math.min(19, y + 1);
-                break;
-            case 'ArrowLeft':
-                x = Math.max(0, x - 1);
-                break;
-            case 'ArrowRight':
-                x = Math.min(19, x + 1);
-                break;
-        }
-
-        entity.style.gridRow = y + 1;
-        entity.style.gridColumn = x + 1;
+        setTimeout(() => {
+            hideMole(mole);
+        }, 1000 + Math.random() * 2000); // Moles appear for 1-3 seconds
     }
 
-    function getRandomDirection() {
-        const directions = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-        return directions[Math.floor(Math.random() * directions.length)];
+    function hideMole(mole) {
+        molesContainer.removeChild(mole);
+        showMole(); // Show a new mole after hiding the previous one
     }
+
+    // Start the game by showing the first mole
+    showMole();
 });
