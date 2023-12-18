@@ -1,56 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const fallingAlphabetsContainer = document.getElementById('falling-alphabets');
+    const gameBoard = document.getElementById('game-board');
+    const rack = document.getElementById('rack');
+    const submitBtn = document.getElementById('submitBtn');
     const scoreElement = document.getElementById('score');
+    
     let score = 0;
+    let selectedTiles = [];
 
-    // Create an array of alphabets
-    const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    function createFallingAlphabet() {
-        const fallingAlphabet = document.createElement('div');
-        fallingAlphabet.classList.add('falling-alphabet');
-        fallingAlphabet.style.left = `${Math.random() * window.innerWidth}px`;
-        fallingAlphabet.textContent = getRandomAlphabet();
-        fallingAlphabetsContainer.appendChild(fallingAlphabet);
-
-        // Move the falling alphabet downward
-        let top = 0;
-        const intervalId = setInterval(() => {
-            top += 5;
-            fallingAlphabet.style.top = `${top}px`;
-
-            // Check if the falling alphabet reached the bottom
-            if (top > window.innerHeight) {
-                clearInterval(intervalId);
-                fallingAlphabetsContainer.removeChild(fallingAlphabet);
-            }
-        }, 20);
+    // Generate initial tiles on the board
+    for (let i = 0; i < 100; i++) {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        tile.textContent = getRandomLetter();
+        tile.addEventListener('click', () => toggleTile(tile));
+        gameBoard.appendChild(tile);
     }
 
-    function getRandomAlphabet() {
-        const randomIndex = Math.floor(Math.random() * alphabets.length);
-        return alphabets[randomIndex];
+    // Generate initial tiles in the player's rack
+    for (let i = 0; i < 7; i++) {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        tile.textContent = getRandomLetter();
+        tile.addEventListener('click', () => toggleTile(tile));
+        rack.appendChild(tile);
     }
 
-    document.addEventListener('keydown', (event) => {
-        const pressedKey = event.key.toUpperCase();
-        const fallingAlphabets = document.querySelectorAll('.falling-alphabet');
+    submitBtn.addEventListener('click', () => submitWord());
 
-        fallingAlphabets.forEach((fallingAlphabet) => {
-            if (fallingAlphabet.textContent === pressedKey) {
-                score++;
-                updateScore();
-                fallingAlphabetsContainer.removeChild(fallingAlphabet);
-            }
-        });
-    });
+    function getRandomLetter() {
+        return alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+
+    function toggleTile(tile) {
+        if (selectedTiles.includes(tile)) {
+            tile.style.backgroundColor = '#61dafb';
+            selectedTiles = selectedTiles.filter(selectedTile => selectedTile !== tile);
+        } else {
+            tile.style.backgroundColor = '#ff6347';
+            selectedTiles.push(tile);
+        }
+    }
+
+    function submitWord() {
+        const word = selectedTiles.map(tile => tile.textContent).join('');
+        if (isValidWord(word)) {
+            score += calculateScore(word);
+            updateScore();
+            replaceSelectedTiles();
+        } else {
+            alert('Invalid word!');
+        }
+    }
+
+    function isValidWord(word) {
+        // In a real Scrabble game, you would validate the word against a dictionary.
+        // For simplicity, this example considers any non-empty string as a valid word.
+        return word.length > 0;
+    }
+
+    function calculateScore(word) {
+        // In a real Scrabble game, you would calculate the score based on tile values.
+        // For simplicity, this example gives 1 point for each letter in the word.
+        return word.length;
+    }
 
     function updateScore() {
         scoreElement.textContent = `Score: ${score}`;
     }
 
-    // Start the game by creating falling alphabets
-    setInterval(() => {
-        createFallingAlphabet();
-    }, 1000);
+    function replaceSelectedTiles() {
+        selectedTiles.forEach(tile => {
+            const newLetter = getRandomLetter();
+            tile.textContent = newLetter;
+            tile.style.backgroundColor = '#61dafb';
+        });
+        selectedTiles = [];
+    }
 });

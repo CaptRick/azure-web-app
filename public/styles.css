@@ -4,20 +4,45 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #87CEEB; /* Light Sky Blue */
+    background-color: #f0f0f0;
 }
 
 #game-container {
     text-align: center;
 }
 
-.falling-alphabet {
-    font-size: 24px;
-    position: absolute;
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    gap: 2px;
+    margin-bottom: 10px;
+}
+
+.tile {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #61dafb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#rack {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+}
+
+#submitBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 #score {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
 }
