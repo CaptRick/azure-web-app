@@ -1,0 +1,10 @@
+/* public/styles.css */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+}
+
+h1 {
+    color: #0078d4;
+}
