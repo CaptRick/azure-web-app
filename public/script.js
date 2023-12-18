@@ -1,54 +1,106 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    const cards = [...symbols, ...symbols]; // Duplicate symbols for matching pairs
-    let flippedCards = [];
+    const board = document.getElementById('game-board');
+    let snake = [{ x: 10, y: 10 }];
+    let food = getRandomPosition();
+    let direction = 'right';
 
-    const memoryGame = document.querySelector('.memory-game');
+    function getRandomPosition() {
+        return {
+            x: Math.floor(Math.random() * 20),
+            y: Math.floor(Math.random() * 20)
+        };
+    }
 
-    // Shuffle the cards array
-    cards.sort(() => Math.random() - 0.5);
+    function draw() {
+        board.innerHTML = '';
 
-    // Create card elements dynamically
-    cards.forEach((symbol, index) => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.dataset.symbol = symbol;
-        card.addEventListener('click', flipCard);
-        
-        const cardContent = document.createElement('div');
-        cardContent.textContent = symbol;
+        // Draw snake
+        snake.forEach(segment => {
+            const snakeElement = document.createElement('div');
+            snakeElement.classList.add('snake');
+            snakeElement.style.gridRowStart = segment.y + 1;
+            snakeElement.style.gridColumnStart = segment.x + 1;
+            board.appendChild(snakeElement);
+        });
 
-        card.appendChild(cardContent);
-        memoryGame.appendChild(card);
+        // Draw food
+        const foodElement = document.createElement('div');
+        foodElement.classList.add('food');
+        foodElement.style.gridRowStart = food.y + 1;
+        foodElement.style.gridColumnStart = food.x + 1;
+        board.appendChild(foodElement);
+    }
+
+    function move() {
+        const head = Object.assign({}, snake[0]); // Clone the head of the snake
+
+        // Update the head position based on the direction
+        switch (direction) {
+            case 'up':
+                head.y--;
+                break;
+            case 'down':
+                head.y++;
+                break;
+            case 'left':
+                head.x--;
+                break;
+            case 'right':
+                head.x++;
+                break;
+        }
+
+        // Check for collisions with walls or itself
+        if (
+            head.x < 0 || head.x >= 20 ||
+            head.y < 0 || head.y >= 20 ||
+            isSnakeCollision(head)
+        ) {
+            alert('Game Over!');
+            resetGame();
+            return;
+        }
+
+        snake.unshift(head); // Add the new head to the front of the snake
+
+        // Check for collision with food
+        if (head.x === food.x && head.y === food.y) {
+            food = getRandomPosition();
+        } else {
+            snake.pop(); // Remove the tail if no collision with food
+        }
+
+        draw(); // Redraw the game board
+    }
+
+    function isSnakeCollision(head) {
+        return snake.some(segment => segment.x === head.x && segment.y === head.y);
+    }
+
+    function resetGame() {
+        snake = [{ x: 10, y: 10 }];
+        food = getRandomPosition();
+        direction = 'right';
+        draw();
+    }
+
+    document.addEventListener('keydown', (event) => {
+        switch (event.key) {
+            case 'ArrowUp':
+                direction = 'up';
+                break;
+            case 'ArrowDown':
+                direction = 'down';
+                break;
+            case 'ArrowLeft':
+                direction = 'left';
+                break;
+            case 'ArrowRight':
+                direction = 'right';
+                break;
+        }
     });
 
-    function flipCard() {
-        if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
-            this.classList.add('flipped');
-            flippedCards.push(this);
-
-            if (flippedCards.length === 2) {
-                setTimeout(checkMatch, 500);
-            }
-        }
-    }
-
-    function checkMatch() {
-        const [card1, card2] = flippedCards;
-        
-        if (card1.dataset.symbol === card2.dataset.symbol) {
-            card1.classList.add('matched');
-            card2.classList.add('matched');
-        } else {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
-        }
-
-        flippedCards = [];
-
-        // Check for win
-        if (document.querySelectorAll('.matched').length === cards.length) {
-            alert('Congratulations! You matched all pairs!');
-        }
-    }
+    setInterval(move, 200); // Move the snake every 200 milliseconds
+    draw(); // Initial draw of the game board
 });
