@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetGame() {
-        snake = [{ x: 10, y: 10 }];
+        snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }]; // Initial snake with two segments
         food = getRandomPosition();
         direction = 'right';
         draw();
