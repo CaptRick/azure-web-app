@@ -1,10 +1,44 @@
-/* public/styles.css */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #282c34;
 }
 
-h1 {
-    color: #0078d4;
+.memory-game {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px;
+}
+
+.card {
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #61dafb;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+}
+
+.card.flipped div {
+    transform: rotateY(180deg);
+}
+
+.matched {
+    background-color: #61dafb;
 }
