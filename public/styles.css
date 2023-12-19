@@ -10,7 +10,7 @@ body {
 .memory-game {
     display: flex;
     flex-wrap: wrap;
-    width: 300px;
+    width: 800px;
 }
 
 .card {
