@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    // const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+    const symbols = Array.from({ length: 26 }, (_, index) => String.fromCharCode('A'.charCodeAt(0) + index));
+
     const cards = [...symbols, ...symbols]; // Duplicate symbols for matching pairs
     let flippedCards = [];
 
