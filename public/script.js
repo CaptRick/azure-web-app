@@ -1,81 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const gameBoard = document.getElementById('game-board');
-    const rack = document.getElementById('rack');
-    const submitBtn = document.getElementById('submitBtn');
-    const scoreElement = document.getElementById('score');
-    
-    let score = 0;
-    let selectedTiles = [];
+    const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    const cards = [...symbols, ...symbols]; // Duplicate symbols for matching pairs
+    let flippedCards = [];
 
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const memoryGame = document.querySelector('.memory-game');
 
-    // Generate initial tiles on the board
-    for (let i = 0; i < 100; i++) {
-        const tile = document.createElement('div');
-        tile.classList.add('tile');
-        tile.textContent = getRandomLetter();
-        tile.addEventListener('click', () => toggleTile(tile));
-        gameBoard.appendChild(tile);
-    }
+    // Shuffle the cards array
+    cards.sort(() => Math.random() - 0.5);
 
-    // Generate initial tiles in the player's rack
-    for (let i = 0; i < 7; i++) {
-        const tile = document.createElement('div');
-        tile.classList.add('tile');
-        tile.textContent = getRandomLetter();
-        tile.addEventListener('click', () => toggleTile(tile));
-        rack.appendChild(tile);
-    }
+    // Create card elements dynamically
+    cards.forEach((symbol, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.symbol = symbol;
+        card.addEventListener('click', flipCard);
+        
+        const cardContent = document.createElement('div');
+        cardContent.textContent = symbol;
 
-    submitBtn.addEventListener('click', () => submitWord());
+        card.appendChild(cardContent);
+        memoryGame.appendChild(card);
+    });
 
-    function getRandomLetter() {
-        return alphabet[Math.floor(Math.random() * alphabet.length)];
-    }
+    function flipCard() {
+        if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+            this.classList.add('flipped');
+            flippedCards.push(this);
 
-    function toggleTile(tile) {
-        if (selectedTiles.includes(tile)) {
-            tile.style.backgroundColor = '#61dafb';
-            selectedTiles = selectedTiles.filter(selectedTile => selectedTile !== tile);
-        } else {
-            tile.style.backgroundColor = '#ff6347';
-            selectedTiles.push(tile);
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 500);
+            }
         }
     }
 
-    function submitWord() {
-        const word = selectedTiles.map(tile => tile.textContent).join('');
-        if (isValidWord(word)) {
-            score += calculateScore(word);
-            updateScore();
-            replaceSelectedTiles();
+    function checkMatch() {
+        const [card1, card2] = flippedCards;
+        
+        if (card1.dataset.symbol === card2.dataset.symbol) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
         } else {
-            alert('Invalid word!');
+            card1.classList.remove('flipped');
+            card2.classList.remove('flipped');
         }
-    }
 
-    function isValidWord(word) {
-        // In a real Scrabble game, you would validate the word against a dictionary.
-        // For simplicity, this example considers any non-empty string as a valid word.
-        return word.length > 0;
-    }
+        flippedCards = [];
 
-    function calculateScore(word) {
-        // In a real Scrabble game, you would calculate the score based on tile values.
-        // For simplicity, this example gives 1 point for each letter in the word.
-        return word.length;
-    }
-
-    function updateScore() {
-        scoreElement.textContent = `Score: ${score}`;
-    }
-
-    function replaceSelectedTiles() {
-        selectedTiles.forEach(tile => {
-            const newLetter = getRandomLetter();
-            tile.textContent = newLetter;
-            tile.style.backgroundColor = '#61dafb';
-        });
-        selectedTiles = [];
+        // Check for win
+        if (document.querySelectorAll('.matched').length === cards.length) {
+            alert('Congratulations! You matched all pairs!');
+        }
     }
 });
